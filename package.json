@@ -1,0 +1,22 @@
+{
+  "name": "questionsanswersapi",
+  "version": "1.0.0",
+  "description": "SDC",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RFE3-Project-Venus/QuestionsAnswersAPI.git"
+  },
+  "author": "Alyssa Antonaccio",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RFE3-Project-Venus/QuestionsAnswersAPI/issues"
+  },
+  "homepage": "https://github.com/RFE3-Project-Venus/QuestionsAnswersAPI#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
