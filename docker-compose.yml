@@ -1,0 +1,23 @@
+version: "3.7"
+services:
+  db:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: secret
+      POSTGRES_USER: ag
+      POSTGRES_DB: questions_answers
+      DATABASE_URL: postgres://ag@db:5432/questions_answers
+    volumes:
+      - ./db/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    ports:
+      - '5432:5432'
+    healthcheck:
+      test: "exit 0"
+  server:
+    image: server_questions:version1.8
+    restart: on-failure
+    depends_on:
+     db:
+      condition: service_healthy
+    ports:
+      - '4000:4000'
