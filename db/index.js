@@ -1,4 +1,5 @@
-const {Client} = require('pg');
+/* eslint-disable no-console */
+const { Client } = require('pg');
 
 const client = new Client({
   user: 'ag',
@@ -7,8 +8,8 @@ const client = new Client({
 });
 
 client.connect()
-.then(() => {console.log('Connected to DB')})
-.catch((err) => {console.log('Not connected to DB', err)});
+  .then(() => { console.log('Connected to DB'); })
+  .catch((err) => { console.log('Not connected to DB', err); });
 
 /*
 command to seed the database: cd into db => psql postgres <schema.sql
@@ -19,4 +20,3 @@ show schema for table => \d
 return all columns from answers where id === 1 => SELECT * FROM answers where id in (1);
 
 */
-
