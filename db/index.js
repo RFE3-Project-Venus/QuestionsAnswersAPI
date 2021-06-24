@@ -3,7 +3,7 @@ const { Client } = require('pg');
 
 const client = new Client({
   user: 'ag',
-  password: '',
+  password: 'secret',
   database: 'questions_answers',
 });
 
@@ -12,6 +12,8 @@ client.connect()
   .catch((err) => { console.log('Not connected to DB', err); });
 
 /*
+login to psql => psql questions_answers
+
 command to seed the database: cd into db => psql postgres <schema.sql
 
 go into db => \c [db name]
