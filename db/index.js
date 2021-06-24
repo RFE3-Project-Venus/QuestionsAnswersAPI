@@ -16,6 +16,7 @@ command to seed the database: cd into db => psql postgres <schema.sql
 go into db => \c [db name]
 quit postgres => \q
 show schema for table => \d
+return all columns from answers where id === 1 => SELECT * FROM answers where id in (1);
 
 */
 
