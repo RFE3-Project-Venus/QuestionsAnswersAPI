@@ -14,7 +14,7 @@ services:
     healthcheck:
       test: "exit 0"
   server:
-    image: server_questions:version1.8
+    image: server_questions:version1.11
     restart: on-failure
     depends_on:
      db:
