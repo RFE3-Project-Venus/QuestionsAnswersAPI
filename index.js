@@ -5,13 +5,17 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const path = require('path');
-const db = require('./db/index.js');
+const { test } = require('./db/index.js');
+
+console.log(test);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => {
-  res.send('Howdy from the other side');
+  test((results) => {
+    res.send(results);
+  });
 });
 
 app.listen(4000);

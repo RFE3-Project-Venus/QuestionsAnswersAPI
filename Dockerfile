@@ -17,4 +17,5 @@ COPY . .
 
 # Expose port # must match the port in index.js
 EXPOSE 4000
-CMD [ "npm", "start", "chmod", "+x", "./wait-for-postgres.sh"]
+CMD [ "npm", "start"]
+

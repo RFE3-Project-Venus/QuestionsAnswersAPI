@@ -1,16 +1,30 @@
 /* eslint-disable no-console */
-const { Client } = require('pg');
+const { Pool } = require('pg');
 
-const client = new Client({
+const pool = new Pool({
   user: 'ag',
   password: 'secret',
   database: 'questions_answers',
+  host: 'db',
 });
 
-client.connect()
+pool.connect()
   .then(() => { console.log('Connected to DB'); })
   .catch((err) => { console.log('Not connected to DB', err); });
 
+const test = (cb) => {
+  console.log('i am being hit');
+  pool.query('SELECT * FROM questions LIMIT 3;')
+    .then((grr) => {
+      console.log(grr.rows);
+      cb(grr);
+    })
+    .catch((e) => console.log('was it this one?', e.stack));
+};
+
+module.exports = {
+  test,
+};
 /*
 login to psql => psql questions_answers
 

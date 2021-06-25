@@ -1,6 +1,4 @@
-DROP DATABASE IF EXISTS questions_answers;
 
-CREATE DATABASE questions_answers;
 
 \c questions_answers
 
@@ -32,26 +30,26 @@ CREATE TABLE IF NOT EXISTS photos(
   photo_url TEXT
 );
 
--- COPY questions(question_id, product_id, question_body, question_date, asker_name, email, question_helpfulness, reported)
--- FROM '/Users/ag/HR/SDC/QuestionsAnswersAPI/CSVFiles/questions.csv'
--- DELIMITER ','
--- CSV HEADER;
+COPY questions(question_id, product_id, question_body, question_date, asker_name, email, question_helpfulness, reported)
+FROM '/usr/share/app/questions.csv'
+DELIMITER ','
+CSV HEADER;
 
--- UPDATE questions
--- SET question_date = to_timestamp(questions.question_date::numeric/1000)
+UPDATE questions
+SET question_date = to_timestamp(questions.question_date::numeric/1000);
 
--- COPY answers(id, question_id, body, answer_date, answerer_name, answerer_email, question_helpfulness, reported)
--- FROM '/Users/ag/HR/SDC/QuestionsAnswersAPI/CSVFiles/answers.csv'
--- DELIMITER ','
--- CSV HEADER;
+COPY answers(id, question_id, body, answer_date, answerer_name, answerer_email, question_helpfulness, reported)
+FROM '/usr/share/app/answers.csv'
+DELIMITER ','
+CSV HEADER;
 
--- UPDATE answers
--- SET answer_date = to_timestamp(answers.answer_date::numeric/1000);
+UPDATE answers
+SET answer_date = to_timestamp(answers.answer_date::numeric/1000);
 
--- COPY photos(id, answer_id, photo_url)
--- FROM '/Users/ag/HR/SDC/QuestionsAnswersAPI/CSVFiles/answers_photos.csv'
--- DELIMITER ','
--- CSV HEADER;
+COPY photos(id, answer_id, photo_url)
+FROM '/usr/share/app/answers_photos.csv'
+DELIMITER ','
+CSV HEADER;
 
 
 -- select to_timestamp(questions.question_date::numeric/1000) from questions;

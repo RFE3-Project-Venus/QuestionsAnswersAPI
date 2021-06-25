@@ -9,4 +9,4 @@ This file includes:
 # To get started
 
 -Docker is used
-
+-Run docker compose up to start the server and database
