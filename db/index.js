@@ -12,19 +12,70 @@ pool.connect()
   .then(() => { console.log('Connected to DB'); })
   .catch((err) => { console.log('Not connected to DB', err); });
 
-const test = (cb) => {
+const getQuestionsAndAnswers = (cb) => {
   console.log('i am being hit');
   pool.query('SELECT * FROM questions LIMIT 3;')
     .then((grr) => {
       console.log(grr.rows);
-      cb(grr);
+      cb(grr.rows);
     })
     .catch((e) => console.log('was it this one?', e.stack));
 };
 
-module.exports = {
-  test,
+const getAnswers = (cb) => {
+  pool.query('SELECT * FROM answers LIMIT 5;')
+    .then((grr) => {
+      console.log(grr.rows);
+      cb(grr.rows);
+    })
+    .catch((e) => console.log('was it this one?', e.stack));
 };
+
+const postQuestionsAndAnswers = (cb) => {
+  pool.query('SELECT * FROM answers LIMIT 5;')
+    .then((grr) => {
+      console.log(grr.rows);
+      cb(grr.rows);
+    })
+    .catch((e) => console.log('was it this one?', e.stack));
+};
+
+const postAnswers = (cb) => {
+  pool.query('SELECT * FROM answers LIMIT 5;')
+    .then((grr) => {
+      console.log(grr.rows);
+      cb(grr.rows);
+    })
+    .catch((e) => console.log('was it this one?', e.stack));
+};
+
+const putQuestionHelpful = (cb) => {
+
+};
+
+const putQuestionReport = (cb) => {
+
+};
+
+const putAnswerHelpful = (cb) => {
+
+};
+
+const putAnswerReport = (cb) => {
+
+};
+
+module.exports = {
+  getQuestionsAndAnswers,
+  postQuestionsAndAnswers,
+  getAnswers,
+  postAnswers,
+  putQuestionHelpful,
+  putQuestionReport,
+  putAnswerHelpful,
+  putAnswerReport,
+};
+
 /*
 login to psql => psql questions_answers
 
