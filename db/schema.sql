@@ -51,10 +51,13 @@ FROM '/Users/ag/HR/SDC/QuestionsAnswersAPI/CSVFiles/answers_photos.csv'
 DELIMITER ','
 CSV HEADER;
 
-CREATE INDEX products_index ON questions (product_id);
-CREATE INDEX reviews_index ON answers (question_id);
-CREATE INDEX answers_index ON answers (answer_id);
-CREATE INDEX photos_index ON photos (photo_id);
+CREATE INDEX products_index ON questions (product_id ASC);
+CREATE INDEX reviews_index ON answers (question_id ASC);
+CREATE INDEX photos_index ON photos (answer_id);
+
+SELECT setval('"questions_question_id_seq"', (SELECT MAX(question_id) FROM questions));
+SELECT setval('"answers_answer_id_seq"', (SELECT MAX(answer_id) FROM answers));
+SELECT setval('"photos_photo_id_seq"', (SELECT MAX(photo_id) FROM photos));
 
 
 -- select to_timestamp(questions.question_date::numeric/1000) from questions;

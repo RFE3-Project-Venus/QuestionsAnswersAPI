@@ -42,11 +42,11 @@ const getQuestionsAndAnswers = (id, limit = 5, cb) => {
       )
       FROM answers
       WHERE questions.question_id = answers.question_id
-      AND answers.reported = 0
+      AND answers.reported > 0
      ) AS answers
     FROM questions
     WHERE questions.product_id = ${id}
-    AND questions.reported = 0
+    AND questions.reported > 0
     LIMIT ${limit};`;
   pool.query(sql)
     .then((questions) => {
@@ -89,20 +89,41 @@ const getAnswers = (id, answerPage, answerCount, cb) => {
     .catch((e) => console.log('Query Error:', e.stack));
 };
 
-const postQuestionsAndAnswers = (cb) => {
-  pool.query('SELECT * FROM answers LIMIT 5;')
+const postQuestionsAndAnswers = (body, name, email, id, cb) => {
+  const sql = `
+  INSERT INTO questions
+    (product_id,
+    question_body,
+    question_date,
+    asker_name,
+    email)
+  VALUES
+    (${id}, '${body}', current_timestamp, '${name}', '${email}');`;
+  pool.query(sql)
     .then((results) => {
-      console.log(results.rows);
-      cb(results.rows);
+      console.log(results);
+      cb(results);
     })
     .catch((e) => console.log('Query Error:', e.stack));
 };
 
-const postAnswers = (cb) => {
-  pool.query('SELECT * FROM answers LIMIT 5;')
+const postAnswers = (id, body, name, email, photos, cb) => {
+  const sql = `
+  INSERT INTO answers
+    (question_id,
+    body,
+    answer_date,
+    answerer_name,
+    answerer_email)
+  VALUES
+    (${id}, '${body}', current_timestamp, '${name}', '${email}');
+  INSERT INTO photos
+    (answer_id, photo_url)
+    VALUES
+    (${id}, (unnest(string_to_array('${photos}',','))));`;
+  pool.query(sql)
     .then((results) => {
-      console.log(results.rows);
-      cb(results.rows);
+      cb(results);
     })
     .catch((e) => console.log('Query Error:', e.stack));
 };
