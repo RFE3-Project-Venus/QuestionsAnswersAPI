@@ -25,9 +25,11 @@ const getQuestionsAndAnswers = (id, cb) => {
       questions.question_date,
       questions.asker_name,
       questions.question_helpfulness,
-      (SELECT json_object_agg(answers.id,
+      (CASE WHEN questions.reported = 0 THEN 'false' ELSE 'true' END) as reported,
+      (SELECT json_object_agg
+        (answers.id,
         json_build_object(
-        answers.id, answers.id,
+        'id', answers.id,
         'body', answers.body,
         'date', answers.answer_date,
         'answerer_name', answers.answerer_name,
@@ -35,11 +37,12 @@ const getQuestionsAndAnswers = (id, cb) => {
         'photos', (SELECT
           array_agg(photos.photo_url) as photos
           FROM photos
-          WHERE answers.id = photos.answer_id
+          WHERE answers.id = photos.answer_id)
         )
-      ))
+      )
       FROM answers
       WHERE questions.question_id = answers.question_id
+      AND answers.reported = 0
      ) AS answers
     FROM questions
     WHERE questions.product_id = ${id}
