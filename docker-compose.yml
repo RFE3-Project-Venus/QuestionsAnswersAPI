@@ -3,9 +3,9 @@ services:
   db:
     image: postgres
     environment:
-      POSTGRES_PASSWORD: secret
-      POSTGRES_USER: ag
-      POSTGRES_DB: questions_answers
+      POSTGRES_PASSWORD: DB.PASSWORD
+      POSTGRES_USER: DB.USER
+      POSTGRES_DB: DB.DB
     volumes:
       - ./db/schema.sql:/docker-entrypoint-initdb.d/schema.sql
       - qa_volume:/usr/share/app

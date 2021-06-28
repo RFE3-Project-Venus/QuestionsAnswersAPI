@@ -9,7 +9,8 @@ const path = require('path');
 const {
   getQuestionsAndAnswers,
   postQuestionsAndAnswers,
-  getAnswers, postAnswers,
+  getAnswers,
+  postAnswers,
   putQuestionHelpful,
   putQuestionReport,
   putAnswerHelpful,
@@ -20,8 +21,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get('/qa/questions', (req, res) => {
-  const { product_id, page, count } = req.params; // stores the incoming req id number
-  getQuestionsAndAnswers((results) => {
+  const { product_id, page, count } = req.query; // stores the incoming req id number
+  getQuestionsAndAnswers(product_id, (results) => {
     res.send(results);
   });
 });

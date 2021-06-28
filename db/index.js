@@ -1,52 +1,82 @@
 /* eslint-disable no-console */
 const { Pool } = require('pg');
+const { USER, PASSWORD, DB } = require('../pass.js');
 
 const pool = new Pool({
-  user: 'ag',
-  password: 'secret',
-  database: 'questions_answers',
-  host: 'db',
+  user: USER,
+  password: PASSWORD,
+  database: DB,
+  // host: 'db',
 });
 
 pool.connect()
   .then(() => { console.log('Connected to DB'); })
   .catch((err) => { console.log('Not connected to DB', err); });
 
-const getQuestionsAndAnswers = (cb) => {
-  console.log('i am being hit');
-  pool.query('SELECT * FROM questions LIMIT 3;')
-    .then((grr) => {
-      console.log(grr.rows);
-      cb(grr.rows);
+const getQuestionsAndAnswers = (id, cb) => {
+  const result = {
+    product_id: id,
+    results: [],
+  };
+  const sql = `
+    SELECT
+      questions.question_id,
+      questions.question_body,
+      questions.question_date,
+      questions.asker_name,
+      questions.question_helpfulness,
+      (SELECT json_object_agg(answers.id,
+        json_build_object(
+        answers.id, answers.id,
+        'body', answers.body,
+        'date', answers.answer_date,
+        'answerer_name', answers.answerer_name,
+        'helpfulness', answers.question_helpfulness,
+        'photos', (SELECT
+          array_agg(photos.photo_url) as photos
+          FROM photos
+          WHERE answers.id = photos.answer_id
+        )
+      ))
+      FROM answers
+      WHERE questions.question_id = answers.question_id
+     ) AS answers
+    FROM questions
+    WHERE questions.product_id = ${id}
+    AND questions.reported = 0;`;
+  pool.query(sql)
+    .then((questions) => {
+      result.results = questions.rows;
+      cb(result);
     })
-    .catch((e) => console.log('was it this one?', e.stack));
+    .catch((e) => console.log('Query Error:', e.stack));
 };
 
 const getAnswers = (cb) => {
   pool.query('SELECT * FROM answers LIMIT 5;')
-    .then((grr) => {
-      console.log(grr.rows);
-      cb(grr.rows);
+    .then((results) => {
+      console.log(results.rows);
+      cb(results.rows);
     })
-    .catch((e) => console.log('was it this one?', e.stack));
+    .catch((e) => console.log('Query Error:', e.stack));
 };
 
 const postQuestionsAndAnswers = (cb) => {
   pool.query('SELECT * FROM answers LIMIT 5;')
-    .then((grr) => {
-      console.log(grr.rows);
-      cb(grr.rows);
+    .then((results) => {
+      console.log(results.rows);
+      cb(results.rows);
     })
-    .catch((e) => console.log('was it this one?', e.stack));
+    .catch((e) => console.log('Query Error:', e.stack));
 };
 
 const postAnswers = (cb) => {
   pool.query('SELECT * FROM answers LIMIT 5;')
-    .then((grr) => {
-      console.log(grr.rows);
-      cb(grr.rows);
+    .then((results) => {
+      console.log(results.rows);
+      cb(results.rows);
     })
-    .catch((e) => console.log('was it this one?', e.stack));
+    .catch((e) => console.log('Query Error:', e.stack));
 };
 
 const putQuestionHelpful = (cb) => {
