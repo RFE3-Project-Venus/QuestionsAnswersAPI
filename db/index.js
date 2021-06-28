@@ -13,7 +13,7 @@ pool.connect()
   .then(() => { console.log('Connected to DB'); })
   .catch((err) => { console.log('Not connected to DB', err); });
 
-const getQuestionsAndAnswers = (id, cb) => {
+const getQuestionsAndAnswers = (id, limit = 5, cb) => {
   const result = {
     product_id: id,
     results: [],
@@ -27,9 +27,9 @@ const getQuestionsAndAnswers = (id, cb) => {
       questions.question_helpfulness,
       (CASE WHEN questions.reported = 0 THEN 'false' ELSE 'true' END) as reported,
       (SELECT json_object_agg
-        (answers.id,
+        (answers.answer_id,
         json_build_object(
-        'id', answers.id,
+        'id', answers.answer_id,
         'body', answers.body,
         'date', answers.answer_date,
         'answerer_name', answers.answerer_name,
@@ -37,7 +37,7 @@ const getQuestionsAndAnswers = (id, cb) => {
         'photos', (SELECT
           array_agg(photos.photo_url) as photos
           FROM photos
-          WHERE answers.id = photos.answer_id)
+          WHERE answers.answer_id = photos.answer_id)
         )
       )
       FROM answers
@@ -46,7 +46,8 @@ const getQuestionsAndAnswers = (id, cb) => {
      ) AS answers
     FROM questions
     WHERE questions.product_id = ${id}
-    AND questions.reported = 0;`;
+    AND questions.reported = 0
+    LIMIT ${limit};`;
   pool.query(sql)
     .then((questions) => {
       result.results = questions.rows;
@@ -55,11 +56,35 @@ const getQuestionsAndAnswers = (id, cb) => {
     .catch((e) => console.log('Query Error:', e.stack));
 };
 
-const getAnswers = (cb) => {
-  pool.query('SELECT * FROM answers LIMIT 5;')
+const getAnswers = (id, answerPage, answerCount, cb) => {
+  const result = {
+    question: id,
+    page: answerPage,
+    count: answerCount,
+    results: [],
+  };
+  const sql = `SELECT
+    answers.answer_id,
+    answers.body,
+    answers.answer_date,
+    answers.answerer_name,
+    answers.question_helpfulness,
+    (SELECT
+      array_agg(
+        json_build_object(
+          'id', photos.photo_id,
+          'url', photos.photo_url
+        )
+      ) as photos
+      FROM photos
+      WHERE answers.answer_id = photos.answer_id)
+    FROM answers
+    WHERE answers.question_id = ${id}
+    AND answers.reported = 0;`;
+  pool.query(sql)
     .then((results) => {
-      console.log(results.rows);
-      cb(results.rows);
+      result.results = results.rows;
+      cb(result);
     })
     .catch((e) => console.log('Query Error:', e.stack));
 };

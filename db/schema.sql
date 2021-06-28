@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS questions(
 );
 
 CREATE TABLE IF NOT EXISTS answers(
-  id serial PRIMARY KEY,
+  answer_id serial PRIMARY KEY,
   question_id INT REFERENCES questions (question_id),
   body TEXT,
   answer_date TEXT,
@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS answers(
 
 CREATE TABLE IF NOT EXISTS photos(
   photo_id serial,
-  answer_id INT REFERENCES answers (id),
+  answer_id INT REFERENCES answers (answer_id),
   photo_url TEXT
 );
 
@@ -38,7 +38,7 @@ CSV HEADER;
 UPDATE questions
 SET question_date = to_timestamp(questions.question_date::numeric/1000);
 
-COPY answers(id, question_id, body, answer_date, answerer_name, answerer_email, question_helpfulness, reported)
+COPY answers(answer_id, question_id, body, answer_date, answerer_name, answerer_email, question_helpfulness, reported)
 FROM '/Users/ag/HR/SDC/QuestionsAnswersAPI/CSVFiles/answers.csv'
 DELIMITER ','
 CSV HEADER;
@@ -53,6 +53,7 @@ CSV HEADER;
 
 CREATE INDEX products_index ON questions (product_id);
 CREATE INDEX reviews_index ON answers (question_id);
+CREATE INDEX answers_index ON answers (answer_id);
 CREATE INDEX photos_index ON photos (photo_id);
 
 
