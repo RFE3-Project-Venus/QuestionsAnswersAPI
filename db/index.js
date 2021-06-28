@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 const { Pool } = require('pg');
+// eslint-disable-next-line import/extensions
 const { USER, PASSWORD, DB } = require('../pass.js');
 
 const pool = new Pool({
@@ -128,20 +129,52 @@ const postAnswers = (id, body, name, email, photos, cb) => {
     .catch((e) => console.log('Query Error:', e.stack));
 };
 
-const putQuestionHelpful = (cb) => {
-
+const putQuestionHelpful = (id, cb) => {
+  const sql = `
+  UPDATE questions
+  SET question_helpfulness  = question_helpfulness  + 1
+  WHERE question_id = ${id};`;
+  pool.query(sql)
+    .then((results) => {
+      cb(results);
+    })
+    .catch((e) => console.log('Query Error:', e.stack));
 };
 
-const putQuestionReport = (cb) => {
-
+const putQuestionReport = (id, cb) => {
+  const sql = `
+  UPDATE questions
+  SET reported = reported + 1
+  WHERE question_id = ${id};`;
+  pool.query(sql)
+    .then((results) => {
+      cb(results);
+    })
+    .catch((e) => console.log('Query Error:', e.stack));
 };
 
-const putAnswerHelpful = (cb) => {
-
+const putAnswerHelpful = (id, cb) => {
+  const sql = `
+  UPDATE answers
+  SET question_helpfulness  = question_helpfulness  + 1
+  WHERE answer_id = ${id};`;
+  pool.query(sql)
+    .then((results) => {
+      cb(results);
+    })
+    .catch((e) => console.log('Query Error:', e.stack));
 };
 
-const putAnswerReport = (cb) => {
-
+const putAnswerReport = (id, cb) => {
+  const sql = `
+  UPDATE answers
+  SET reported = reported + 1
+  WHERE answer_id = ${id};`;
+  pool.query(sql)
+    .then((results) => {
+      cb(results);
+    })
+    .catch((e) => console.log('Query Error:', e.stack));
 };
 
 module.exports = {
