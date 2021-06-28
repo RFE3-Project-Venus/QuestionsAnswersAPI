@@ -1,0 +1,24 @@
+config:
+  # For learning purposes we are hitting the real database in development, but ideally we would be pointing the target to a test database (which would sit on another port)
+  target: "http://localhost:4000"
+  phases:
+    - duration: 60
+      arrivalRate: 1000
+      name: The Real Dealz
+    # - duration: 120
+    #   arrivalRate: 5
+    #   rampTo: 50
+    #   name: Ramp up load
+    # - duration: 200
+    #   arrivalRate: 50
+    #   name: Sustained load
+  payload:
+    path: "/Users/ag/HR/SDC/QuestionsAnswersAPI/Artillery/randomProducts.csv"
+    fields:
+    - "product_id"
+
+scenarios:
+  - name: "Fetch all questions and answers"
+    flow:
+      - get:
+          url: "/qa/questions?product_id={{product_id}}"

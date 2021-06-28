@@ -3,9 +3,9 @@ services:
   db:
     image: postgres
     environment:
-      POSTGRES_PASSWORD: DB.PASSWORD
-      POSTGRES_USER: DB.USER
-      POSTGRES_DB: DB.DB
+      POSTGRES_PASSWORD: secret
+      POSTGRES_USER: ag
+      POSTGRES_DB: questions_answers
     volumes:
       - ./db/schema.sql:/docker-entrypoint-initdb.d/schema.sql
       - qa_volume:/usr/share/app
@@ -14,7 +14,7 @@ services:
     healthcheck:
       test: "exit 0"
   server:
-    image: server_questions:version1.2
+    image: server_questions:version2.0
     restart: on-failure
     environment:
       DATABASE_URL: postgres://ag:secret@db:5432/questions_answers

@@ -1,13 +1,13 @@
 /* eslint-disable no-console */
 const { Pool } = require('pg');
 // eslint-disable-next-line import/extensions
-const { USER, PASSWORD, DB } = require('../pass.js');
+// const { USER, PASSWORD, DB } = require('../pass.js');
 
 const pool = new Pool({
-  user: USER,
-  password: PASSWORD,
-  database: DB,
-  // host: 'db',
+  user: 'ag',
+  password: 'secret',
+  database: 'questions_answers',
+  host: 'db',
 });
 
 pool.connect()
@@ -43,11 +43,11 @@ const getQuestionsAndAnswers = (id, limit = 5, cb) => {
       )
       FROM answers
       WHERE questions.question_id = answers.question_id
-      AND answers.reported > 0
+      AND answers.reported = 0
      ) AS answers
     FROM questions
     WHERE questions.product_id = ${id}
-    AND questions.reported > 0
+    AND questions.reported = 0
     LIMIT ${limit};`;
   pool.query(sql)
     .then((questions) => {
