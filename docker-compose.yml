@@ -14,7 +14,7 @@ services:
     healthcheck:
       test: "exit 0"
   server:
-    image: server_questions:version2.0
+    image: server_questions:version3.0
     restart: on-failure
     environment:
       DATABASE_URL: postgres://ag:secret@db:5432/questions_answers

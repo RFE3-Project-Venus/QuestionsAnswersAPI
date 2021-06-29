@@ -4,7 +4,7 @@ config:
   phases:
     - duration: 60
       arrivalRate: 1000
-      name: The Real Dealz
+      name: Warm up
     # - duration: 120
     #   arrivalRate: 5
     #   rampTo: 50
