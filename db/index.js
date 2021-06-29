@@ -1,7 +1,6 @@
 /* eslint-disable no-console */
 const { Pool } = require('pg');
 // eslint-disable-next-line import/extensions
-// const { USER, PASSWORD, DB } = require('../pass.js');
 
 const pool = new Pool({
   user: 'ag',
@@ -38,9 +37,7 @@ const getQuestionsAndAnswers = (id, limit = 5, cb) => {
         'photos', (SELECT
           array_agg(photos.photo_url) as photos
           FROM photos
-          WHERE answers.answer_id = photos.answer_id)
-        )
-      )
+          WHERE answers.answer_id = photos.answer_id)))
       FROM answers
       WHERE questions.question_id = answers.question_id
       AND answers.reported = 0
@@ -54,7 +51,7 @@ const getQuestionsAndAnswers = (id, limit = 5, cb) => {
       result.results = questions.rows;
       cb(result);
     })
-    .catch((e) => console.log('Query Error:', e.stack));
+    .catch((e) => cb(e.stack));
 };
 
 const getAnswers = (id, answerPage, answerCount, cb) => {
@@ -74,9 +71,7 @@ const getAnswers = (id, answerPage, answerCount, cb) => {
       array_agg(
         json_build_object(
           'id', photos.photo_id,
-          'url', photos.photo_url
-        )
-      ) as photos
+          'url', photos.photo_url)) as photos
       FROM photos
       WHERE answers.answer_id = photos.answer_id)
     FROM answers
@@ -87,7 +82,7 @@ const getAnswers = (id, answerPage, answerCount, cb) => {
       result.results = results.rows;
       cb(result);
     })
-    .catch((e) => console.log('Query Error:', e.stack));
+    .catch((e) => cb(e.stack));
 };
 
 const postQuestionsAndAnswers = (body, name, email, id, cb) => {
@@ -102,10 +97,9 @@ const postQuestionsAndAnswers = (body, name, email, id, cb) => {
     (${id}, '${body}', current_timestamp, '${name}', '${email}');`;
   pool.query(sql)
     .then((results) => {
-      console.log(results);
       cb(results);
     })
-    .catch((e) => console.log('Query Error:', e.stack));
+    .catch((e) => cb(e.stack));
 };
 
 const postAnswers = (id, body, name, email, photos, cb) => {
@@ -126,7 +120,7 @@ const postAnswers = (id, body, name, email, photos, cb) => {
     .then((results) => {
       cb(results);
     })
-    .catch((e) => console.log('Query Error:', e.stack));
+    .catch((e) => cb(e.stack));
 };
 
 const putQuestionHelpful = (id, cb) => {
@@ -138,7 +132,7 @@ const putQuestionHelpful = (id, cb) => {
     .then((results) => {
       cb(results);
     })
-    .catch((e) => console.log('Query Error:', e.stack));
+    .catch((e) => cb(e.stack));
 };
 
 const putQuestionReport = (id, cb) => {
@@ -150,7 +144,7 @@ const putQuestionReport = (id, cb) => {
     .then((results) => {
       cb(results);
     })
-    .catch((e) => console.log('Query Error:', e.stack));
+    .catch((e) => cb(e.stack));
 };
 
 const putAnswerHelpful = (id, cb) => {
@@ -162,7 +156,7 @@ const putAnswerHelpful = (id, cb) => {
     .then((results) => {
       cb(results);
     })
-    .catch((e) => console.log('Query Error:', e.stack));
+    .catch((e) => cb(e.stack));
 };
 
 const putAnswerReport = (id, cb) => {
@@ -174,7 +168,7 @@ const putAnswerReport = (id, cb) => {
     .then((results) => {
       cb(results);
     })
-    .catch((e) => console.log('Query Error:', e.stack));
+    .catch((e) => cb(e.stack));
 };
 
 module.exports = {
@@ -187,15 +181,3 @@ module.exports = {
   putAnswerHelpful,
   putAnswerReport,
 };
-
-/*
-login to psql => psql questions_answers
-
-command to seed the database: cd into db => psql postgres <schema.sql
-
-go into db => \c [db name]
-quit postgres => \q
-show schema for table => \d
-return all columns from answers where id === 1 => SELECT * FROM answers where id in (1);
-
-*/

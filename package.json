@@ -4,7 +4,6 @@
   "description": "SDC",
   "main": "index.js",
   "scripts": {
-    "prestart": "if [ ! -d node_modules ]; then npm install; fi",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon index.js"
   },
@@ -19,13 +18,10 @@
   },
   "homepage": "https://github.com/RFE3-Project-Venus/QuestionsAnswersAPI#readme",
   "dependencies": {
-    "body-parser": "^1.19.0",
+    "eslint": "^7.29.0",
+    "eslint-config-airbnb": "^18.2.1",
     "express": "^4.17.1",
     "nodemon": "^2.0.7",
     "pg": "^8.6.0"
-  },
-  "devDependencies": {
-    "eslint": "^7.29.0",
-    "eslint-config-airbnb": "^18.2.1"
   }
 }
