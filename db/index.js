@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */
 /* eslint-disable no-console */
 const { Pool } = require('pg');
 // eslint-disable-next-line import/extensions
@@ -13,7 +14,7 @@ pool.connect()
   .then(() => { console.log('Connected to DB'); })
   .catch((err) => { console.log('Not connected to DB', err); });
 
-const getQuestionsAndAnswers = (id, limit = 5, cb) => {
+async function getQuestionsAndAnswers(id, limit = 5, cb) {
   const result = {
     product_id: id,
     results: [],
@@ -33,11 +34,7 @@ const getQuestionsAndAnswers = (id, limit = 5, cb) => {
         'body', answers.body,
         'date', answers.answer_date,
         'answerer_name', answers.answerer_name,
-        'helpfulness', answers.question_helpfulness,
-        'photos', (SELECT
-          array_agg(photos.photo_url) as photos
-          FROM photos
-          WHERE answers.answer_id = photos.answer_id)))
+        'helpfulness', answers.question_helpfulness))
       FROM answers
       WHERE questions.question_id = answers.question_id
       AND answers.reported = 0
@@ -46,13 +43,23 @@ const getQuestionsAndAnswers = (id, limit = 5, cb) => {
     WHERE questions.product_id = ${id}
     AND questions.reported = 0
     LIMIT ${limit};`;
-  pool.query(sql)
-    .then((questions) => {
-      result.results = questions.rows;
-      cb(result);
-    })
-    .catch((e) => cb(e.stack));
-};
+  const test = await pool.query(sql);
+  result.results = test.rows;
+  for (let i = 0; i < result.results.length; i += 1) {
+    if (result.results[i].answers) {
+      // eslint-disable-next-line guard-for-in
+      for (const key in result.results[i].answers) {
+        // eslint-disable-next-line no-await-in-loop
+        const another = await pool.query(`SELECT
+             array_agg(photos.photo_url) as photos
+             FROM photos
+             WHERE ${key} = photos.answer_id`);
+        result.results[i].answers[key].photos = another.rows[0].photos;
+      }
+    }
+  }
+  cb(result);
+}
 
 const getAnswers = (id, answerPage, answerCount, cb) => {
   const result = {
@@ -115,7 +122,7 @@ const postAnswers = (id, body, name, email, photos, cb) => {
   INSERT INTO photos
     (answer_id, photo_url)
     VALUES
-    (${id}, (unnest(string_to_array('${photos}',','))));`;
+    (currval(pg_get_serial_sequence('answers','answer_id')), (unnest(string_to_array('${photos}',','))));`;
   pool.query(sql)
     .then((results) => {
       cb(results);

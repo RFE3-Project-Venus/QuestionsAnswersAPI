@@ -1,6 +1,7 @@
 /* eslint-disable camelcase */
 /* eslint-disable import/extensions */
 /* eslint-disable no-unused-vars */
+require('newrelic');
 const express = require('express');
 
 const app = express();
