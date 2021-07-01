@@ -14,7 +14,7 @@ pool.connect()
   .then(() => { console.log('Connected to DB'); })
   .catch((err) => { console.log('Not connected to DB', err); });
 
-async function getQuestionsAndAnswers(id, limit = 5, cb) {
+function getQuestionsAndAnswers(id, limit = 5, cb) {
   const result = {
     product_id: id,
     results: [],
@@ -34,7 +34,12 @@ async function getQuestionsAndAnswers(id, limit = 5, cb) {
         'body', answers.body,
         'date', answers.answer_date,
         'answerer_name', answers.answerer_name,
-        'helpfulness', answers.question_helpfulness))
+        'helpfulness', answers.question_helpfulness,
+        'photos', (SELECT
+            array_agg(photos.photo_url)
+            FROM photos
+            WHERE answers.answer_id = photos.answer_id)
+        ))
       FROM answers
       WHERE questions.question_id = answers.question_id
       AND answers.reported = 0
@@ -43,22 +48,14 @@ async function getQuestionsAndAnswers(id, limit = 5, cb) {
     WHERE questions.product_id = ${id}
     AND questions.reported = 0
     LIMIT ${limit};`;
-  const test = await pool.query(sql);
-  result.results = test.rows;
-  for (let i = 0; i < result.results.length; i += 1) {
-    if (result.results[i].answers) {
-      // eslint-disable-next-line guard-for-in
-      for (const key in result.results[i].answers) {
-        // eslint-disable-next-line no-await-in-loop
-        const another = await pool.query(`SELECT
-             array_agg(photos.photo_url) as photos
-             FROM photos
-             WHERE ${key} = photos.answer_id`);
-        result.results[i].answers[key].photos = another.rows[0].photos;
-      }
-    }
-  }
-  cb(result);
+  pool.query(sql)
+    .then((results) => {
+      result.results = results.rows;
+      cb(result);
+    })
+    .catch((err) => {
+      cb(err);
+    });
 }
 
 const getAnswers = (id, answerPage, answerCount, cb) => {

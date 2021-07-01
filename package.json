@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/RFE3-Project-Venus/QuestionsAnswersAPI#readme",
   "dependencies": {
+    "cors": "^2.8.5",
     "eslint": "^7.29.0",
     "eslint-config-airbnb": "^18.2.1",
     "express": "^4.17.1",
