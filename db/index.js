@@ -106,7 +106,7 @@ const postQuestionsAndAnswers = (body, name, email, id, cb) => {
     .catch((e) => cb(e.stack));
 };
 
-const postAnswers = (id, body, name, email, photos, cb) => {
+const postAnswers = (id, body, name, email, photos = [], cb) => {
   const sql = `
   INSERT INTO answers
     (question_id,
@@ -118,7 +118,7 @@ const postAnswers = (id, body, name, email, photos, cb) => {
     (${id}, '${body}', current_timestamp, '${name}', '${email}');
   INSERT INTO photos
     (answer_id, photo_url)
-    VALUES
+  VALUES
     (currval(pg_get_serial_sequence('answers','answer_id')), (unnest(string_to_array('${photos}',','))));`;
   pool.query(sql)
     .then((results) => {
