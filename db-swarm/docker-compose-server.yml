@@ -1,0 +1,10 @@
+version: "3.7"
+services:
+  server:
+    image: alyant34/server_questions:version7.0
+    ports:
+      - '80:4000'
+networks:
+  default:
+    external:
+      name: sdc
